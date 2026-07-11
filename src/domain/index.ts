@@ -1,12 +1,45 @@
-export { createGameState, type GameState } from './game-state';
-export { analyzeConnectivity, classifyNumberCount, type ConnectedGroup, type GroupClassification } from './connectivity';
-export { createSeededRng, nextInt, nextRandom, type RandomStep, type SeededRng } from './rng';
-export { executeCommand, type CommandResult } from './transitions';
-export { scoreBlackjackGroup, scoreMatchGroup, scorePokerGroup, type GroupScore } from './scoring';
-export { analyzeBoard, analyzeGame, penaltyFor, type BoardAnalysis, type GroupAnalysis } from './analysis';
-export { calculateRating, calculateSettlement, type GameSettlement, type Rating, type SettlementBonuses } from './settlement';
-export { previewCommand, replayCommands, runCommand, type ReplayResult } from './api';
-export { RULESET_V1, type Ruleset } from './ruleset';
+export { createGameState, type GameState } from "./game-state";
+export {
+  analyzeConnectivity,
+  classifyNumberCount,
+  type ConnectedGroup,
+  type GroupClassification,
+} from "./connectivity";
+export {
+  createSeededRng,
+  nextInt,
+  nextRandom,
+  type RandomStep,
+  type SeededRng,
+} from "./rng";
+export { executeCommand, type CommandResult } from "./transitions";
+export {
+  scoreBlackjackGroup,
+  scoreMatchGroup,
+  scorePokerGroup,
+  type GroupScore,
+} from "./scoring";
+export {
+  analyzeBoard,
+  analyzeGame,
+  penaltyFor,
+  type BoardAnalysis,
+  type GroupAnalysis,
+} from "./analysis";
+export {
+  calculateRating,
+  calculateSettlement,
+  type GameSettlement,
+  type Rating,
+  type SettlementBonuses,
+} from "./settlement";
+export {
+  previewCommand,
+  replayCommands,
+  runCommand,
+  type ReplayResult,
+} from "./api";
+export { RULESET_V1, type Ruleset } from "./ruleset";
 export {
   createBoardId,
   createCell,
@@ -29,12 +62,13 @@ export {
   type Rank,
   type RewardState,
   type RewardOffer,
+  type RerollOffer,
   type RewardOption,
   type RewardTrigger,
   type SmallRewardKind,
   type Score,
   type Suit,
-} from './types';
+} from "./types";
 export type {
   Command,
   DomainEvent,
@@ -45,4 +79,6 @@ export type {
   SubmitBoardCommand,
   FeatureTarget,
   UseFeatureCommand,
-} from './commands';
+  SelectRerollOptionCommand,
+  AdjustRewardRankCommand,
+} from "./commands";

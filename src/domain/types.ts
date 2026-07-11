@@ -2,32 +2,55 @@ export type Brand<Value, Name extends string> = Value & {
   readonly __brand: Name;
 };
 
-export type BoardId = Brand<string, 'BoardId'>;
-export type CellId = Brand<string, 'CellId'>;
-export type Score = Brand<number, 'Score'>;
+export type BoardId = Brand<string, "BoardId">;
+export type CellId = Brand<string, "CellId">;
+export type Score = Brand<number, "Score">;
 
-export type BoardKind = 'poker' | 'blackjack' | 'match';
-export type Rank = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 'J' | 'Q' | 'K';
-export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
-export type InkColor = 'red' | 'blue' | 'green' | 'purple';
-export type Marker = 'crown' | 'inspiration';
-export type RewardTrigger = 'crown' | 'inspiration' | 'completion';
-export type FeatureCardKind = 'swap-ink' | 'swap-number' | 'rank-up' | 'rank-down' | 'reroll-number' | 'sever-ink';
-export type SmallRewardKind = 'bonus-ink' | 'adjust-rank' | 'redraw-hand' | 'bonus-score';
+export type BoardKind = "poker" | "blackjack" | "match";
+export type Rank =
+  "A" | "2" | "3" | "4" | "5" | "6" | "7" | "8" | "9" | "10" | "J" | "Q" | "K";
+export type Suit = "spades" | "hearts" | "diamonds" | "clubs";
+export type InkColor = "red" | "blue" | "green" | "purple";
+export type Marker = "crown" | "inspiration";
+export type RewardTrigger = "crown" | "inspiration" | "completion";
+export type FeatureCardKind =
+  | "swap-ink"
+  | "swap-number"
+  | "rank-up"
+  | "rank-down"
+  | "reroll-number"
+  | "sever-ink";
+export type SmallRewardKind =
+  "bonus-ink" | "adjust-rank" | "redraw-hand" | "bonus-score";
 export type RewardOption =
-  | { readonly id: string; readonly type: 'feature'; readonly card: FeatureCard }
-  | { readonly id: string; readonly type: 'small'; readonly reward: SmallRewardKind };
+  | {
+      readonly id: string;
+      readonly type: "feature";
+      readonly card: FeatureCard;
+    }
+  | {
+      readonly id: string;
+      readonly type: "small";
+      readonly reward: SmallRewardKind;
+    };
 
 export interface FeatureCard {
   readonly id: string;
   readonly kind: FeatureCardKind;
-  readonly rarity: 'common' | 'rare';
+  readonly rarity: "common" | "rare";
 }
 
 export interface RewardOffer {
   readonly trigger: RewardTrigger;
   readonly choicesRemaining: number;
   readonly options: readonly RewardOption[];
+}
+
+export interface RerollOffer {
+  readonly cardId: string;
+  readonly boardId: BoardId;
+  readonly cellId: CellId;
+  readonly candidates: readonly PlayingCard[];
 }
 
 export interface RewardState {
@@ -37,6 +60,7 @@ export interface RewardState {
   readonly bonusScore: Score;
   readonly pendingRewards: readonly RewardTrigger[];
   readonly activeOffer: RewardOffer | null;
+  readonly activeReroll: RerollOffer | null;
   readonly reserve: readonly FeatureCard[];
   readonly bonusInk: InkColor | null;
   readonly rankAdjustments: number;
@@ -50,6 +74,7 @@ export const createRewardState = (): RewardState => ({
   bonusScore: createScore(0),
   pendingRewards: [],
   activeOffer: null,
+  activeReroll: null,
   reserve: [],
   bonusInk: null,
   rankAdjustments: 0,
@@ -88,24 +113,35 @@ export interface Board {
   readonly locked: boolean;
 }
 
-export const createBoardId = (value: string): BoardId => brandNonBlank(value, 'BoardId');
-export const createCellId = (value: string): CellId => brandNonBlank(value, 'CellId');
+export const createBoardId = (value: string): BoardId =>
+  brandNonBlank(value, "BoardId");
+export const createCellId = (value: string): CellId =>
+  brandNonBlank(value, "CellId");
 
 export const createScore = (value: number): Score => {
   if (!Number.isFinite(value)) {
-    throw new RangeError('Score must be finite.');
+    throw new RangeError("Score must be finite.");
   }
   return value as Score;
 };
 
 export const createPosition = (row: number, column: number): Position => {
-  if (!Number.isInteger(row) || !Number.isInteger(column) || row < 0 || column < 0) {
-    throw new RangeError('Position coordinates must be non-negative integers.');
+  if (
+    !Number.isInteger(row) ||
+    !Number.isInteger(column) ||
+    row < 0 ||
+    column < 0
+  ) {
+    throw new RangeError("Position coordinates must be non-negative integers.");
   }
   return { row, column };
 };
 
-export const createCell = (id: CellId, position: Position, contents: CellContents = {}): Cell => ({
+export const createCell = (
+  id: CellId,
+  position: Position,
+  contents: CellContents = {},
+): Cell => ({
   id,
   position,
   ...(contents.number === undefined ? {} : { number: contents.number }),
@@ -113,7 +149,10 @@ export const createCell = (id: CellId, position: Position, contents: CellContent
   markers: [...(contents.markers ?? [])],
 });
 
-function brandNonBlank<Name extends string>(value: string, label: Name): Brand<string, Name> {
+function brandNonBlank<Name extends string>(
+  value: string,
+  label: Name,
+): Brand<string, Name> {
   if (value.trim().length === 0) {
     throw new RangeError(`${label} must not be blank.`);
   }

@@ -1,8 +1,14 @@
-import type { BoardId, CellId, InkColor, PlayingCard, RewardTrigger } from './types';
+import type {
+  BoardId,
+  CellId,
+  InkColor,
+  PlayingCard,
+  RewardTrigger,
+} from "./types";
 
 export interface PlaceNumberFaceCommand {
-  readonly type: 'place-card';
-  readonly mode: 'number-face';
+  readonly type: "place-card";
+  readonly mode: "number-face";
   readonly boardId: BoardId;
   readonly cellId: CellId;
   readonly card: PlayingCard;
@@ -10,44 +16,105 @@ export interface PlaceNumberFaceCommand {
 }
 
 export interface PlaceNumberBackCommand {
-  readonly type: 'place-card';
-  readonly mode: 'number-back';
+  readonly type: "place-card";
+  readonly mode: "number-back";
   readonly boardId: BoardId;
   readonly cellId: CellId;
   readonly ink: InkColor;
 }
 
 export interface PlaceInkCommand {
-  readonly type: 'place-ink';
+  readonly type: "place-ink";
   readonly boardId: BoardId;
   readonly cellId: CellId;
   readonly ink: InkColor;
-  readonly source: 'ink-card' | 'wildcard';
+  readonly source: "ink-card" | "wildcard";
 }
 
 export interface SubmitBoardCommand {
-  readonly type: 'submit-board';
+  readonly type: "submit-board";
   readonly boardId: BoardId;
 }
 
-export interface OpenRewardCommand { readonly type: 'open-reward'; }
-export interface SelectRewardOptionCommand { readonly type: 'select-reward-option'; readonly optionId: string; }
-export interface DiscardReserveCommand { readonly type: 'discard-reserve'; readonly cardId: string; }
-export interface FeatureTarget { readonly boardId: BoardId; readonly cellId: CellId; }
-export interface UseFeatureCommand { readonly type: 'use-feature'; readonly cardId: string; readonly targets: readonly FeatureTarget[]; }
+export interface OpenRewardCommand {
+  readonly type: "open-reward";
+}
+export interface SelectRewardOptionCommand {
+  readonly type: "select-reward-option";
+  readonly optionId: string;
+}
+export interface DiscardReserveCommand {
+  readonly type: "discard-reserve";
+  readonly cardId: string;
+}
+export interface FeatureTarget {
+  readonly boardId: BoardId;
+  readonly cellId: CellId;
+}
+export interface UseFeatureCommand {
+  readonly type: "use-feature";
+  readonly cardId: string;
+  readonly targets: readonly FeatureTarget[];
+}
+export interface SelectRerollOptionCommand {
+  readonly type: "select-reroll-option";
+  readonly candidateIndex: number;
+}
+export interface AdjustRewardRankCommand {
+  readonly type: "adjust-reward-rank";
+  readonly boardId: BoardId;
+  readonly cellId: CellId;
+  readonly amount: -1 | 1;
+}
 
-export type PlacementCommand = PlaceNumberFaceCommand | PlaceNumberBackCommand | PlaceInkCommand;
-export type Command = PlacementCommand | SubmitBoardCommand | OpenRewardCommand | SelectRewardOptionCommand | DiscardReserveCommand | UseFeatureCommand;
+export type PlacementCommand =
+  PlaceNumberFaceCommand | PlaceNumberBackCommand | PlaceInkCommand;
+export type Command =
+  | PlacementCommand
+  | SubmitBoardCommand
+  | OpenRewardCommand
+  | SelectRewardOptionCommand
+  | DiscardReserveCommand
+  | UseFeatureCommand
+  | SelectRerollOptionCommand
+  | AdjustRewardRankCommand;
 
 export type DomainEvent =
-  | { readonly type: 'number-placed'; readonly boardId: BoardId; readonly cellId: CellId }
-  | { readonly type: 'ink-placed'; readonly boardId: BoardId; readonly cellId: CellId }
-  | { readonly type: 'board-submitted'; readonly boardId: BoardId }
-  | { readonly type: 'crown-connected'; readonly boardId: BoardId }
-  | { readonly type: 'marker-collected'; readonly boardId: BoardId; readonly cellId: CellId }
-  | { readonly type: 'reward-queued'; readonly reward: RewardTrigger }
-  | { readonly type: 'reward-opened'; readonly reward: RewardTrigger }
-  | { readonly type: 'reward-selected'; readonly optionId: string }
-  | { readonly type: 'reserve-card-discarded'; readonly cardId: string }
-  | { readonly type: 'feature-used'; readonly cardId: string }
-  | { readonly type: 'command-rejected'; readonly command: Command; readonly reason: string };
+  | {
+      readonly type: "number-placed";
+      readonly boardId: BoardId;
+      readonly cellId: CellId;
+    }
+  | {
+      readonly type: "ink-placed";
+      readonly boardId: BoardId;
+      readonly cellId: CellId;
+    }
+  | { readonly type: "board-submitted"; readonly boardId: BoardId }
+  | { readonly type: "crown-connected"; readonly boardId: BoardId }
+  | {
+      readonly type: "marker-collected";
+      readonly boardId: BoardId;
+      readonly cellId: CellId;
+    }
+  | { readonly type: "reward-queued"; readonly reward: RewardTrigger }
+  | { readonly type: "reward-opened"; readonly reward: RewardTrigger }
+  | { readonly type: "reward-selected"; readonly optionId: string }
+  | { readonly type: "reserve-card-discarded"; readonly cardId: string }
+  | { readonly type: "feature-used"; readonly cardId: string }
+  | { readonly type: "reroll-offered"; readonly cardId: string }
+  | {
+      readonly type: "reroll-selected";
+      readonly cardId: string;
+      readonly candidateIndex: number;
+    }
+  | {
+      readonly type: "rank-adjustment-used";
+      readonly boardId: BoardId;
+      readonly cellId: CellId;
+    }
+  | {
+      readonly type: "command-rejected";
+      readonly command: Command;
+      readonly reason: string;
+    };
