@@ -2,6 +2,7 @@ export { createGameState, type GameState } from './game-state';
 export { analyzeConnectivity, classifyNumberCount, type ConnectedGroup, type GroupClassification } from './connectivity';
 export { createSeededRng, nextInt, nextRandom, type RandomStep, type SeededRng } from './rng';
 export { executeCommand, type CommandResult } from './transitions';
+export { scoreBlackjackGroup, scoreMatchGroup, scorePokerGroup, type GroupScore } from './scoring';
 export { RULESET_V1, type Ruleset } from './ruleset';
 export {
   createBoardId,
