@@ -12,6 +12,20 @@ export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 export type InkColor = 'red' | 'blue' | 'green' | 'purple';
 export type Marker = 'crown' | 'inspiration';
 
+export interface RewardState {
+  readonly crownTriggered: boolean;
+  readonly collectedMarkerIds: readonly CellId[];
+  readonly inspirationProgress: number;
+  readonly bonusScore: Score;
+}
+
+export const createRewardState = (): RewardState => ({
+  crownTriggered: false,
+  collectedMarkerIds: [],
+  inspirationProgress: 0,
+  bonusScore: createScore(0),
+});
+
 export interface Position {
   readonly row: number;
   readonly column: number;

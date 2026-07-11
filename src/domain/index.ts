@@ -12,6 +12,7 @@ export {
   createCell,
   createCellId,
   createPosition,
+  createRewardState,
   createScore,
   type Board,
   type BoardId,
@@ -24,6 +25,7 @@ export {
   type PlayingCard,
   type Position,
   type Rank,
+  type RewardState,
   type Score,
   type Suit,
 } from './types';

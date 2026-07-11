@@ -1,13 +1,14 @@
 import { RULESET_V1, type Ruleset } from './ruleset';
 import { createSeededRng, type SeededRng } from './rng';
-import { createBoardId, createCell, createCellId, createPosition, type Board, type BoardKind } from './types';
+import { createBoardId, createCell, createCellId, createPosition, createRewardState, type Board, type BoardKind, type RewardState } from './types';
 
 export interface GameState {
-  readonly schemaVersion: 1;
+  readonly schemaVersion: 2;
   readonly seed: number;
   readonly rng: SeededRng;
   readonly ruleset: Ruleset;
   readonly boards: readonly Board[];
+  readonly rewards: RewardState;
 }
 
 export const createGameState = (seed: number, ruleset: Ruleset = RULESET_V1): GameState => {
@@ -15,11 +16,12 @@ export const createGameState = (seed: number, ruleset: Ruleset = RULESET_V1): Ga
     throw new RangeError('Seed must be an integer.');
   }
   return {
-    schemaVersion: 1,
+    schemaVersion: 2,
     seed,
     rng: createSeededRng(seed),
     ruleset,
     boards: createBoards(ruleset.boardSize),
+    rewards: createRewardState(),
   };
 };
 

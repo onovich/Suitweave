@@ -17,7 +17,14 @@ describe('standard game generator', () => {
         .toEqual(expect.arrayContaining([expect.any(Number), expect.any(Number), expect.any(Number), expect.any(Number)]));
       expect([0, 1, 2, 3].every((quadrant) => numbers.filter((cell) => quadrantOf(cell.position.row, cell.position.column, board.size) === quadrant).length >= 2)).toBe(true);
       expect(noDenseTwoByTwo(numbers.map((cell) => cell.position))).toBe(true);
+      expect(board.cells.filter((cell) => cell.markers.includes('inspiration')).length).toBeGreaterThanOrEqual(3);
+      expect(board.cells.filter((cell) => cell.markers.includes('inspiration')).length).toBeLessThanOrEqual(5);
     });
+    const crownCells = game.state.boards.flatMap((board) => board.cells.filter((cell) => cell.markers.includes('crown')));
+    expect(crownCells).toHaveLength(2);
+    const [first, second] = crownCells;
+    if (first === undefined || second === undefined) throw new Error('Expected two crown cells.');
+    expect(Math.abs(first.position.row - second.position.row) + Math.abs(first.position.column - second.position.column)).toBeGreaterThanOrEqual(4);
   });
 });
 

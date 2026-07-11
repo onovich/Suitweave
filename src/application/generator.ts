@@ -1,4 +1,4 @@
-import { createGameState, nextInt, nextRandom, type Board, type GameState, type PlayingCard, type Position, type Rank, type SeededRng, type Suit } from '../domain';
+import { createGameState, nextInt, nextRandom, type Board, type Cell, type CellId, type GameState, type Marker, type PlayingCard, type Position, type Rank, type SeededRng, type Suit } from '../domain';
 
 const RANKS: readonly Rank[] = ['A', '2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K'];
 const SUITS: readonly Suit[] = ['spades', 'hearts', 'diamonds', 'clubs'];
@@ -11,11 +11,14 @@ export interface GeneratedGame {
 export const generateStandardGame = (seed: number): GeneratedGame => {
   const initial = createGameState(seed);
   let rng = initial.rng;
+  const crownBoard = nextInt(rng, initial.boards.length);
+  rng = crownBoard.next;
   const boards: Board[] = [];
-  for (const board of initial.boards) {
+  for (const [index, board] of initial.boards.entries()) {
     const generated = generateBoard(board, initial.ruleset.initialNumbers.min, initial.ruleset.initialNumbers.max, rng);
-    boards.push(generated.board);
-    rng = generated.rng;
+    const decorated = decorateBoard(generated.board, generated.rng, index === crownBoard.value);
+    boards.push(decorated.board);
+    rng = decorated.rng;
   }
   return { state: { ...initial, rng, boards }, attempts: 1 };
 };
@@ -35,6 +38,47 @@ function generateBoard(board: Board, minimum: number, maximum: number, startingR
     return { ...cell, number: drawn.card };
   });
   return { board: { ...board, cells }, rng };
+}
+
+function decorateBoard(board: Board, startingRng: SeededRng, hasCrowns: boolean): Readonly<{ board: Board; rng: SeededRng }> {
+  const markerCount = nextInt(startingRng, 3);
+  const markers = chooseMarkers(board, markerCount.value + 3, markerCount.next);
+  const crowns = hasCrowns ? chooseCrowns(board, markers.rng) : { ids: [], rng: markers.rng };
+  return {
+    board: {
+      ...board,
+      cells: board.cells.map((cell) => ({ ...cell, markers: markerLayer(cell.id, markers.ids, crowns.ids) })),
+    },
+    rng: crowns.rng,
+  };
+}
+
+function chooseMarkers(board: Board, count: number, startingRng: SeededRng): Readonly<{ ids: readonly CellId[]; rng: SeededRng }> {
+  const selected: Cell[] = [];
+  let rng = startingRng;
+  while (selected.length < count) {
+    const candidates = board.cells.filter((cell) => !selected.includes(cell) && selected.every((other) => distance(cell.position, other.position) >= 2));
+    const draw = nextInt(rng, candidates.length);
+    const cell = candidates[draw.value];
+    if (cell === undefined) throw new Error('Unable to place inspiration markers.');
+    selected.push(cell);
+    rng = draw.next;
+  }
+  return { ids: selected.map((cell) => cell.id), rng };
+}
+
+function chooseCrowns(board: Board, startingRng: SeededRng): Readonly<{ ids: readonly CellId[]; rng: SeededRng }> {
+  const pairs = board.cells.flatMap((first, index) => board.cells.slice(index + 1).filter((second) => distance(first.position, second.position) >= 4 && distance(first.position, second.position) <= 10).map((second) => [first, second] as const));
+  const draw = nextInt(startingRng, pairs.length);
+  const pair = pairs[draw.value];
+  if (pair === undefined) throw new Error('Unable to place crown markers.');
+  return { ids: pair.map((cell) => cell.id), rng: draw.next };
+}
+
+function distance(left: Position, right: Position): number { return Math.abs(left.row - right.row) + Math.abs(left.column - right.column); }
+
+function markerLayer(cellId: CellId, markerIds: readonly CellId[], crownIds: readonly CellId[]): readonly Marker[] {
+  return [...(markerIds.includes(cellId) ? ['inspiration' as const] : []), ...(crownIds.includes(cellId) ? ['crown' as const] : [])];
 }
 
 function addNumbers(
