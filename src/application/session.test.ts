@@ -7,8 +7,10 @@ describe('application session contract', () => {
     const state = createGameState(42);
     const session = startSession(42, state);
 
-    expect(session).toMatchObject({ state, status: 'playing', selection: null, preview: null, settlement: null });
-    expect(session.turn).toMatchObject({ round: 1, actionsRemaining: 3, hand: [], usedCardIds: [] });
+    expect(session).toMatchObject({ status: 'playing', selection: null, preview: null, settlement: null });
+    expect(session.state).toMatchObject({ seed: state.seed, ruleset: state.ruleset, boards: state.boards });
+    expect(session.turn).toMatchObject({ round: 1, actionsRemaining: 3, usedCardIds: [] });
+    expect(session.turn.hand).toHaveLength(6);
   });
 
   it('keeps rejected application intent non-mutating', () => {

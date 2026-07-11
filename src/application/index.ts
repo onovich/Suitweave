@@ -1,5 +1,6 @@
-export { rejectSessionAction, startSession } from './session';
+export { endTurn, rejectSessionAction, startSession } from './session';
 export { generateStandardGame, type GeneratedGame } from './generator';
+export { drawBasicHand, type DrawnHand } from './turn';
 export type {
   GameSession,
   HandCard,
