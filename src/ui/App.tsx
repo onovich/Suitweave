@@ -2,6 +2,7 @@
 import { useMemo, useState } from "react";
 import {
   adjustRewardRank,
+  cancelPreview,
   chooseWildcardInk,
   discardFeature,
   endTurn,
@@ -448,7 +449,7 @@ export function App({ audio = null }: Readonly<{ audio?: AudioPort | null }>) {
           </button>
           <button
             onClick={() => {
-              setSession({ ...session, preview: null });
+              apply(cancelPreview(session));
             }}
           >
             取消

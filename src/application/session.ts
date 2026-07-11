@@ -3,7 +3,7 @@ import { generateStandardGame } from "./generator";
 import { settleSession } from "./submission";
 import { drawBasicHand } from "./turn";
 import { advanceTutorial, createTutorialState, TUTORIAL_SEED } from "./tutorial";
-import type { GameSession, SessionResult } from "./types";
+import { createSessionMetrics, type GameSession, type SessionResult } from "./types";
 
 export const startSession = (
   seed: number,
@@ -23,6 +23,7 @@ export const startSession = (
     preview: null,
     featurePreview: null,
     tutorial: null,
+    metrics: createSessionMetrics(),
     settlement: null,
   };
 };

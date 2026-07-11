@@ -10,6 +10,6 @@ describe('feature-card application use case', () => {
     const session = startSession(3, { ...base, boards: [board, ...base.boards.slice(1)], rewards: { ...base.rewards, reserve: [reserve] } });
     const result = executeFeatureCard(session, 'up', [{ boardId: board.id, cellId: createCellId('cell') }]);
 
-    expect(result).toMatchObject({ ok: true, session: { turn: { actionsRemaining: 2 }, state: { rewards: { reserve: [] } } } });
+    expect(result).toMatchObject({ ok: true, session: { turn: { actionsRemaining: 2 }, state: { rewards: { reserve: [] } }, metrics: { featureCardsUsed: 1 } } });
   });
 });

@@ -17,6 +17,7 @@ export { generateStandardGame, type GeneratedGame } from "./generator";
 export { drawBasicHand, drawReplacementCard, type DrawnHand } from "./turn";
 export {
   chooseWildcardInk,
+  cancelPreview,
   executePreview,
   previewPlacement,
   selectCard,
@@ -57,4 +58,5 @@ export type {
   TutorialStatus,
   TutorialStep,
   TutorialStepId,
+  SessionMetrics,
 } from "./types";

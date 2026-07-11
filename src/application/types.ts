@@ -69,6 +69,20 @@ export interface TutorialState {
   readonly completedSteps: readonly TutorialStepId[];
 }
 
+export interface SessionMetrics {
+  readonly featureCardsUsed: number;
+  readonly overloadedPreviews: number;
+  readonly bustPreviews: number;
+  readonly riskyPreviewsCanceled: number;
+}
+
+export const createSessionMetrics = (): SessionMetrics => ({
+  featureCardsUsed: 0,
+  overloadedPreviews: 0,
+  bustPreviews: 0,
+  riskyPreviewsCanceled: 0,
+});
+
 export interface GameSession {
   readonly state: GameState;
   readonly turn: TurnState;
@@ -77,6 +91,7 @@ export interface GameSession {
   readonly preview: Preview | null;
   readonly featurePreview: FeaturePreview | null;
   readonly tutorial: TutorialState | null;
+  readonly metrics: SessionMetrics;
   readonly settlement: GameSettlement | null;
 }
 

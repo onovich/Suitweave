@@ -6,7 +6,7 @@ describe("session review", () => {
     const session = settleSession(startSession(17));
     const review = reviewSession(session);
 
-    expect(review).toMatchObject({ seed: 17, completedBoards: 0, rating: session.settlement?.rating, total: session.settlement?.total });
+    expect(review).toMatchObject({ seed: 17, completedBoards: 0, featureCardsUsed: 0, riskyPreviewsCanceled: 0, rating: session.settlement?.rating, total: session.settlement?.total });
     expect(session.status).toBe("settled");
   });
 });

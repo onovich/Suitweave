@@ -124,9 +124,27 @@ export const executePreview = (session: GameSession): SessionResult => {
     ...session,
     state: result.state,
     turn: nextTurn,
+    metrics: {
+      ...session.metrics,
+      overloadedPreviews: session.metrics.overloadedPreviews + Number(preview.risks.includes("overloaded")),
+      bustPreviews: session.metrics.bustPreviews + Number(preview.risks.includes("bust")),
+    },
     selection: null,
     preview: null,
     featurePreview: null,
+  });
+};
+
+export const cancelPreview = (session: GameSession): SessionResult => {
+  const preview = session.preview;
+  if (preview === null) return reject(session, "No current preview.");
+  return accept({
+    ...session,
+    preview: null,
+    metrics: {
+      ...session.metrics,
+      riskyPreviewsCanceled: session.metrics.riskyPreviewsCanceled + Number(preview.risks.length > 0),
+    },
   });
 };
 

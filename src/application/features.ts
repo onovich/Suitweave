@@ -69,6 +69,10 @@ export const executeFeaturePreview = (session: GameSession): SessionResult => {
     session: {
       ...session,
       state: result.state,
+      metrics: {
+        ...session.metrics,
+        featureCardsUsed: session.metrics.featureCardsUsed + Number(!createsRerollOffer),
+      },
       turn: createsRerollOffer
         ? session.turn
         : {
@@ -106,6 +110,7 @@ export const selectRerollCandidate = (
     session: {
       ...session,
       state: result.state,
+      metrics: { ...session.metrics, featureCardsUsed: session.metrics.featureCardsUsed + 1 },
       turn: {
         ...session.turn,
         actionsRemaining: session.turn.actionsRemaining - 1,
