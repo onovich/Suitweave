@@ -1,0 +1,17 @@
+﻿{
+    "schemaVersion":  1,
+    "initializedMarker":  "codex-project-git-workflow: initialized",
+    "initializedAt":  "2026-07-11 14:54:06 +08:00",
+    "projectName":  "Suitweave",
+    "repoRoot":  "D:/WebProjects/Suitweave",
+    "safeDirectory":  "D:/WebProjects/Suitweave",
+    "statusCommand":  "git -c safe.directory=D:/WebProjects/Suitweave status --short --branch",
+    "validationCommands":  [
+
+                           ],
+    "stagingPolicy":  "ask each time",
+    "commitCommand":  "",
+    "pushCommand":  "git -c safe.directory=D:/WebProjects/Suitweave push -u origin HEAD",
+    "docsRequirement":  "",
+    "forbiddenCommands":  ""
+}
