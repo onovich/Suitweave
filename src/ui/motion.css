@@ -1,0 +1,5 @@
+@keyframes suitweave-settle{from{transform:scale(.96);filter:brightness(1.25)}to{transform:scale(1);filter:brightness(1)}}
+.cell.ink-red,.cell.ink-blue,.cell.ink-green,.cell.ink-purple{animation:suitweave-settle 150ms ease-out both}
+.reward-panel,.feature-target,.submit{transition:transform 150ms ease-out,filter 150ms ease-out}
+.reward-panel:focus-within,.feature-target:focus-within,.submit:hover{transform:translateY(-1px);filter:brightness(1.08)}
+@media (prefers-reduced-motion: reduce){.cell.ink-red,.cell.ink-blue,.cell.ink-green,.cell.ink-purple{animation:none}.reward-panel,.feature-target,.submit{transition:none}}
