@@ -1,3 +1,7 @@
 import react from '@vitejs/plugin-react';
-import { defineConfig } from 'vite';
-export default defineConfig({ plugins: [react()], server: { port: 5173 } });
+import { defineConfig } from 'vitest/config';
+export default defineConfig({
+  plugins: [react()],
+  server: { port: 5173 },
+  test: { exclude: ['**/node_modules/**', '**/dist/**', '**/.{idea,git,cache,output,temp}/**', 'e2e/**'] },
+});

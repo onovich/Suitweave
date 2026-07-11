@@ -17,7 +17,7 @@
     "structureCheck": { "commands": ["pnpm arch:check"] },
     "codegen": { "commands": [] },
     "docsCheck": { "commands": [] },
-    "smoke": { "urls": ["http://127.0.0.1:5173"], "commands": [] },
+    "smoke": { "urls": ["http://127.0.0.1:5173"], "commands": ["pnpm test:e2e"] },
     "package": { "commands": ["pnpm build"] },
     "releaseDryRun": { "commands": ["pnpm validate"] }
   },
