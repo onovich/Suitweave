@@ -479,6 +479,7 @@ function Settlement({
         <h2>Session review</h2>
         <p>Boards completed: {review.completedBoards} · Crown: {review.crownConnected ? "connected" : "not connected"}</p>
         <p>Markers: {review.markersCollected} · Reserve cards: {review.reserveCards} · Actions left: {review.actionsRemaining}</p>
+        <p>Feature cards used: {review.featureCardsUsed} · Overload previews: {review.overloadedPreviews} · Bust previews: {review.bustPreviews} · Risky previews canceled: {review.riskyPreviewsCanceled}</p>
       </section>
       <button onClick={onNew}>开始下一局</button>
     </main>
