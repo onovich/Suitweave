@@ -2,6 +2,7 @@ import type { GameState } from "../domain";
 import { generateStandardGame } from "./generator";
 import { settleSession } from "./submission";
 import { drawBasicHand } from "./turn";
+import { advanceTutorial, createTutorialState, TUTORIAL_SEED } from "./tutorial";
 import type { GameSession, SessionResult } from "./types";
 
 export const startSession = (
@@ -21,9 +22,12 @@ export const startSession = (
     selection: null,
     preview: null,
     featurePreview: null,
+    tutorial: null,
     settlement: null,
   };
 };
+
+export const startTutorialSession = (): GameSession => ({ ...startSession(TUTORIAL_SEED), tutorial: createTutorialState() });
 
 export const rejectSessionAction = (
   session: GameSession,
@@ -54,9 +58,7 @@ export const endTurn = (session: GameSession): SessionResult => {
   }
   const nextRound = session.turn.round + 1;
   const drawn = drawBasicHand(session.state, nextRound);
-  return {
-    ok: true,
-    session: {
+  const nextSession: GameSession = {
       ...session,
       state: drawn.state,
       turn: {
@@ -68,8 +70,8 @@ export const endTurn = (session: GameSession): SessionResult => {
       selection: null,
       preview: null,
       featurePreview: null,
-    },
   };
+  return { ok: true, session: advanceTutorial(nextSession) };
 };
 
 function allBoardsLocked(state: GameState): boolean {

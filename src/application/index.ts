@@ -1,4 +1,18 @@
-export { endTurn, rejectSessionAction, startSession } from "./session";
+export {
+  endTurn,
+  rejectSessionAction,
+  startSession,
+  startTutorialSession,
+} from "./session";
+export {
+  advanceTutorial,
+  completeTutorial,
+  createTutorialState,
+  skipTutorial,
+  TUTORIAL_SEED,
+  TUTORIAL_STEPS,
+  tutorialStepForRound,
+} from "./tutorial";
 export { generateStandardGame, type GeneratedGame } from "./generator";
 export { drawBasicHand, drawReplacementCard, type DrawnHand } from "./turn";
 export {
@@ -37,4 +51,8 @@ export type {
   SessionResult,
   SessionStatus,
   TurnState,
+  TutorialState,
+  TutorialStatus,
+  TutorialStep,
+  TutorialStepId,
 } from "./types";
