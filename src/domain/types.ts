@@ -12,6 +12,23 @@ export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 export type InkColor = 'red' | 'blue' | 'green' | 'purple';
 export type Marker = 'crown' | 'inspiration';
 export type RewardTrigger = 'crown' | 'inspiration' | 'completion';
+export type FeatureCardKind = 'swap-ink' | 'swap-number' | 'rank-up' | 'rank-down' | 'reroll-number' | 'sever-ink';
+export type SmallRewardKind = 'bonus-ink' | 'adjust-rank' | 'redraw-hand' | 'bonus-score';
+export type RewardOption =
+  | { readonly id: string; readonly type: 'feature'; readonly card: FeatureCard }
+  | { readonly id: string; readonly type: 'small'; readonly reward: SmallRewardKind };
+
+export interface FeatureCard {
+  readonly id: string;
+  readonly kind: FeatureCardKind;
+  readonly rarity: 'common' | 'rare';
+}
+
+export interface RewardOffer {
+  readonly trigger: RewardTrigger;
+  readonly choicesRemaining: number;
+  readonly options: readonly RewardOption[];
+}
 
 export interface RewardState {
   readonly crownTriggered: boolean;
@@ -19,6 +36,11 @@ export interface RewardState {
   readonly inspirationProgress: number;
   readonly bonusScore: Score;
   readonly pendingRewards: readonly RewardTrigger[];
+  readonly activeOffer: RewardOffer | null;
+  readonly reserve: readonly FeatureCard[];
+  readonly bonusInk: InkColor | null;
+  readonly rankAdjustments: number;
+  readonly redraws: number;
 }
 
 export const createRewardState = (): RewardState => ({
@@ -27,6 +49,11 @@ export const createRewardState = (): RewardState => ({
   inspirationProgress: 0,
   bonusScore: createScore(0),
   pendingRewards: [],
+  activeOffer: null,
+  reserve: [],
+  bonusInk: null,
+  rankAdjustments: 0,
+  redraws: 0,
 });
 
 export interface Position {
