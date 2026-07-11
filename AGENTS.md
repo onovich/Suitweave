@@ -38,3 +38,11 @@ Do not silently fall back to generic git/build/test behavior when those configs 
 
 <!-- /codex-init-flow -->
 
+## Suitweave Architecture Guardrails
+
+- Product name is `织花牌 / Suitweave`; the name in the historical GDD is obsolete.
+- Read `docs/architecture.md`, `docs/engineering-standards.md`, and the active ADRs before changing public contracts.
+- Dependency direction is `ui -> application -> domain`; platform adapters implement ports and must not leak into domain.
+- A feature is not complete until `pnpm validate` passes and preview/execution share the same domain rule path.
+- Add an ADR for changes to architecture, rule semantics, save schema, or platform strategy.
+
