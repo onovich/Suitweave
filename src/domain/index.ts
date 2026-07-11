@@ -1,5 +1,7 @@
 export { createGameState, type GameState } from './game-state';
 export { analyzeConnectivity, classifyNumberCount, type ConnectedGroup, type GroupClassification } from './connectivity';
+export { createSeededRng, nextInt, nextRandom, type RandomStep, type SeededRng } from './rng';
+export { executeCommand, type CommandResult } from './transitions';
 export { RULESET_V1, type Ruleset } from './ruleset';
 export {
   createBoardId,
@@ -21,4 +23,10 @@ export {
   type Score,
   type Suit,
 } from './types';
-export type { Command, DomainEvent, PlaceInkCommand, PlaceNumberCommand } from './commands';
+export type {
+  Command,
+  DomainEvent,
+  PlaceInkCommand,
+  PlaceNumberBackCommand,
+  PlaceNumberFaceCommand,
+} from './commands';

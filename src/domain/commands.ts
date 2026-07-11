@@ -1,10 +1,19 @@
 import type { BoardId, CellId, InkColor, PlayingCard } from './types';
 
-export interface PlaceNumberCommand {
-  readonly type: 'place-number';
+export interface PlaceNumberFaceCommand {
+  readonly type: 'place-card';
+  readonly mode: 'number-face';
   readonly boardId: BoardId;
   readonly cellId: CellId;
   readonly card: PlayingCard;
+  readonly ink: InkColor;
+}
+
+export interface PlaceNumberBackCommand {
+  readonly type: 'place-card';
+  readonly mode: 'number-back';
+  readonly boardId: BoardId;
+  readonly cellId: CellId;
   readonly ink: InkColor;
 }
 
@@ -13,9 +22,10 @@ export interface PlaceInkCommand {
   readonly boardId: BoardId;
   readonly cellId: CellId;
   readonly ink: InkColor;
+  readonly source: 'ink-card' | 'wildcard';
 }
 
-export type Command = PlaceNumberCommand | PlaceInkCommand;
+export type Command = PlaceNumberFaceCommand | PlaceNumberBackCommand | PlaceInkCommand;
 
 export type DomainEvent =
   | { readonly type: 'number-placed'; readonly boardId: BoardId; readonly cellId: CellId }

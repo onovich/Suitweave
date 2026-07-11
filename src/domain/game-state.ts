@@ -1,9 +1,11 @@
 import { RULESET_V1, type Ruleset } from './ruleset';
+import { createSeededRng, type SeededRng } from './rng';
 import { createBoardId, createCell, createCellId, createPosition, type Board, type BoardKind } from './types';
 
 export interface GameState {
   readonly schemaVersion: 1;
   readonly seed: number;
+  readonly rng: SeededRng;
   readonly ruleset: Ruleset;
   readonly boards: readonly Board[];
 }
@@ -15,6 +17,7 @@ export const createGameState = (seed: number, ruleset: Ruleset = RULESET_V1): Ga
   return {
     schemaVersion: 1,
     seed,
+    rng: createSeededRng(seed),
     ruleset,
     boards: createBoards(ruleset.boardSize),
   };
