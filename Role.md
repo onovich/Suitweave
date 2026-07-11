@@ -2,7 +2,7 @@
 
 workspace: D:\\WebProjects\\Suitweave
 created_at: 2026-07-11T06:53:25.322Z
-updated_at: 2026-07-11T14:56:42.5107574+08:00
+updated_at: 2026-07-11T15:22:02.7829673+08:00
 
 planner:
   role: architect
@@ -15,3 +15,13 @@ executor:
   thread_id: 019f4ff6-17c6-75c1-a354-42d532d945fb
   title: 程序开发执行者
   evidence: current active program development executor thread in the same workspace.
+
+idempotency:
+  active_goal_guide: docs/phase-1-rules-core-goal-mode-execution-guide.md
+  active_goal_phase: Phase 1 规则内核
+  last_planner_dispatch: 2026-07-11T15:22:02.7829673+08:00
+  last_planner_dispatch_status: ready
+  last_planner_dispatch_guide: docs/phase-1-rules-core-goal-mode-execution-guide.md
+  last_planner_dispatch_commit: pending
+  last_executor_report_commit: none
+  last_check_status: pending

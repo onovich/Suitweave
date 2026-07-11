@@ -1,5 +1,7 @@
 # Suitweave 研发 Roadmap
 
+当前执行入口：[Phase 1 规则内核 Goal 模式执行指南](phase-1-rules-core-goal-mode-execution-guide.md)，预算 8 轮。
+
 轮次指一次目标明确、包含实现与验证的 Codex 会话；估算按 1 名主执行者计算。并行 worker 仅在边界已稳定后使用，避免多人同时改核心规则。
 
 | Phase | 交付与退出条件 | 预计轮次 | 合适的 sub agent / worker | 推荐 Codex 模型 |
