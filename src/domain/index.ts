@@ -5,6 +5,7 @@ export { executeCommand, type CommandResult } from './transitions';
 export { scoreBlackjackGroup, scoreMatchGroup, scorePokerGroup, type GroupScore } from './scoring';
 export { analyzeBoard, analyzeGame, penaltyFor, type BoardAnalysis, type GroupAnalysis } from './analysis';
 export { calculateRating, calculateSettlement, type GameSettlement, type Rating, type SettlementBonuses } from './settlement';
+export { previewCommand, replayCommands, runCommand, type ReplayResult } from './api';
 export { RULESET_V1, type Ruleset } from './ruleset';
 export {
   createBoardId,
