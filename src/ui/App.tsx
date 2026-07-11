@@ -11,6 +11,7 @@ import {
   previewFeatureCard,
   previewPlacement,
   redrawHandCard,
+  reviewSession,
   selectCard,
   selectRerollCandidate,
   selectRewardOption,
@@ -21,13 +22,14 @@ import {
   startTutorialSession,
   submitBoard,
   TUTORIAL_STEPS,
+  type AudioPort,
   type GameSession,
 } from "../application";
 import type { FeatureTarget, Suit } from "../domain";
 
 const inks = ["red", "blue", "green", "purple"] as const;
 
-export function App() {
+export function App({ audio = null }: Readonly<{ audio?: AudioPort | null }>) {
   const [session, setSession] = useState<GameSession>(() =>
     startSession(20260711),
   );
@@ -40,6 +42,7 @@ export function App() {
   const [rankReward, setRankReward] = useState<-1 | 1 | null>(null);
   const [redrawing, setRedrawing] = useState(false);
   const [feedback, setFeedback] = useState<string | null>(null);
+  const [muted, setMuted] = useState(false);
   const boards = useMemo(() => sessionViewModel(session), [session]);
   const tutorialStep =
     session.tutorial === null
@@ -50,6 +53,7 @@ export function App() {
   const apply = (result: ReturnType<typeof endTurn>) => {
     setSession(result.session);
     setFeedback(result.ok ? null : result.reason);
+    if (result.ok) audio?.play("place");
   };
   const select = (cardId: string) => {
     apply(selectCard(session, cardId));
@@ -103,6 +107,12 @@ export function App() {
           Start guided tutorial
         </button>
         <span>Guidance is optional and never hides the three boards.</span>
+      </section>
+      <section className="audio-controls" aria-label="Audio controls">
+        <button onClick={() => { const next = !muted; setMuted(next); audio?.setMuted(next); }}>
+          {muted ? "Enable sound" : "Mute sound"}
+        </button>
+        <label>Volume <input aria-label="Volume" type="range" min="0" max="1" step="0.1" defaultValue="0.12" onChange={(event) => audio?.setVolume(Number(event.currentTarget.value))} /></label>
       </section>
       {session.tutorial !== null && tutorialStep !== undefined && (
         <section className="tutorial-panel" aria-live="polite">
@@ -454,6 +464,7 @@ function Settlement({
   onNew,
 }: Readonly<{ session: GameSession; onNew: () => void }>) {
   const settlement = session.settlement;
+  const review = reviewSession(session);
   return (
     <main className="settlement">
       <small>织花牌 · 本局结算</small>
@@ -463,6 +474,11 @@ function Settlement({
         惩罚 {settlement?.penalty ?? 0}
       </p>
       <p>Seed：{session.state.seed}</p>
+      <section aria-label="Session review">
+        <h2>Session review</h2>
+        <p>Boards completed: {review.completedBoards} · Crown: {review.crownConnected ? "connected" : "not connected"}</p>
+        <p>Markers: {review.markersCollected} · Reserve cards: {review.reserveCards} · Actions left: {review.actionsRemaining}</p>
+      </section>
       <button onClick={onNew}>开始下一局</button>
     </main>
   );

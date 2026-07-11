@@ -35,6 +35,8 @@ export {
   selectRewardOption,
 } from "./rewards";
 export { redrawHandCard } from "./hand-rewards";
+export { reviewSession, type SessionReview } from "./review";
+export type { AudioCue, AudioPort } from "./audio";
 export {
   executeFeatureCard,
   executeFeaturePreview,
