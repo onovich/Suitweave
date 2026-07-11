@@ -33,9 +33,11 @@ export interface SubmitBoardCommand {
 export interface OpenRewardCommand { readonly type: 'open-reward'; }
 export interface SelectRewardOptionCommand { readonly type: 'select-reward-option'; readonly optionId: string; }
 export interface DiscardReserveCommand { readonly type: 'discard-reserve'; readonly cardId: string; }
+export interface FeatureTarget { readonly boardId: BoardId; readonly cellId: CellId; }
+export interface UseFeatureCommand { readonly type: 'use-feature'; readonly cardId: string; readonly targets: readonly FeatureTarget[]; }
 
 export type PlacementCommand = PlaceNumberFaceCommand | PlaceNumberBackCommand | PlaceInkCommand;
-export type Command = PlacementCommand | SubmitBoardCommand | OpenRewardCommand | SelectRewardOptionCommand | DiscardReserveCommand;
+export type Command = PlacementCommand | SubmitBoardCommand | OpenRewardCommand | SelectRewardOptionCommand | DiscardReserveCommand | UseFeatureCommand;
 
 export type DomainEvent =
   | { readonly type: 'number-placed'; readonly boardId: BoardId; readonly cellId: CellId }
@@ -47,4 +49,5 @@ export type DomainEvent =
   | { readonly type: 'reward-opened'; readonly reward: RewardTrigger }
   | { readonly type: 'reward-selected'; readonly optionId: string }
   | { readonly type: 'reserve-card-discarded'; readonly cardId: string }
+  | { readonly type: 'feature-used'; readonly cardId: string }
   | { readonly type: 'command-rejected'; readonly command: Command; readonly reason: string };

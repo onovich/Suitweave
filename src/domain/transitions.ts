@@ -2,6 +2,7 @@ import type { Command, DomainEvent, PlacementCommand } from './commands';
 import { analyzeBoard } from './analysis';
 import { analyzeConnectivity } from './connectivity';
 import { executeRewardCommand } from './reward-transitions';
+import { executeFeature } from './feature-transitions';
 import type { GameState } from './game-state';
 import type { Board, Cell } from './types';
 
@@ -12,6 +13,10 @@ export type CommandResult =
 export const executeCommand = (state: GameState, command: Command): CommandResult => {
   if (command.type === 'open-reward' || command.type === 'select-reward-option' || command.type === 'discard-reserve') {
     const result = executeRewardCommand(state, command);
+    return result.reason === undefined ? { ok: true, state: result.state, events: result.events } : reject(state, command, result.reason);
+  }
+  if (command.type === 'use-feature') {
+    const result = executeFeature(state, command);
     return result.reason === undefined ? { ok: true, state: result.state, events: result.events } : reject(state, command, result.reason);
   }
   const board = state.boards.find((candidate) => candidate.id === command.boardId);
