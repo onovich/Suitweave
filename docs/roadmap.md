@@ -1,5 +1,7 @@
 # Suitweave 研发 Roadmap
 
+> Phase 4 completed. Validation: [Phase 4 report](phase-4-onboarding-and-experience-validation-report.md). Do not start Phase 5 until planner acceptance passes.
+
 Phase 3 已由规划者验收 PASS。当前执行入口：[Phase 4 教学与体验打磨 Goal 模式执行指南](phase-4-onboarding-and-experience-goal-mode-execution-guide.md)，预算 8 轮。
 
 轮次指一次目标明确、包含实现与验证的 Codex 会话；估算按 1 名主执行者计算。并行 worker 仅在边界已稳定后使用，避免多人同时改核心规则。

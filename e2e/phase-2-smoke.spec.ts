@@ -32,3 +32,16 @@ test('three marker collections open and resolve an inspiration reward', async ({
   await page.getByLabel('奖励选择').getByRole('button').first().click();
   await expect(page.getByLabel('奖励选择')).toHaveCount(0);
 });
+
+test('tutorial controls and audio fallback remain usable on a narrow reduced-motion viewport', async ({ page }) => {
+  await page.emulateMedia({ reducedMotion: 'reduce' });
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto('/');
+  await page.getByRole('button', { name: 'Start guided tutorial' }).click();
+  await expect(page.getByText('Start with the 21 board')).toBeVisible();
+  await expect(page.locator('.active-board .grid')).toBeVisible();
+  await page.getByRole('button', { name: 'Mute sound' }).click();
+  await expect(page.getByRole('button', { name: 'Enable sound' })).toBeVisible();
+  await page.getByRole('button', { name: 'Skip tutorial' }).click();
+  await expect(page.getByRole('button', { name: 'Skip tutorial' })).toHaveCount(0);
+});
