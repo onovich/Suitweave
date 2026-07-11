@@ -3,6 +3,7 @@ import type { GameSession, Preview, PreviewRisk, Selection, SessionResult } from
 
 export const selectCard = (session: GameSession, cardId: string): SessionResult => {
   if (session.status !== 'playing') return reject(session, 'Game is already settled.');
+  if (rewardPending(session)) return reject(session, 'Resolve pending rewards before continuing.');
   const card = session.turn.hand.find((candidate) => candidate.id === cardId);
   if (card === undefined || session.turn.usedCardIds.includes(cardId)) return reject(session, 'Card is not available.');
   const selection: Selection = { cardId, mode: 'face', wildcardInk: null };
@@ -62,6 +63,7 @@ export const executePreview = (session: GameSession): SessionResult => {
 };
 
 function placementCommand(session: GameSession, boardId: BoardId, cellId: CellId): Command | string {
+  if (rewardPending(session)) return 'Resolve pending rewards before continuing.';
   if (session.turn.actionsRemaining <= 0) return 'No actions remain this turn.';
   const card = selectedCard(session);
   if (card === undefined || session.selection === null) return 'No card is selected.';
@@ -96,3 +98,4 @@ function previewRisks(preview: Preview['result'], wasLocked: boolean, before: Pr
 
 function accept(session: GameSession): SessionResult { return { ok: true, session }; }
 function reject(session: GameSession, reason: string): SessionResult { return { ok: false, session, reason }; }
+function rewardPending(session: GameSession): boolean { return session.state.rewards.activeOffer !== null || session.state.rewards.pendingRewards.length > 0; }

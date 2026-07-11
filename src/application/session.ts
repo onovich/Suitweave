@@ -24,6 +24,7 @@ export const rejectSessionAction = (session: GameSession, reason: string): Sessi
 
 export const endTurn = (session: GameSession): SessionResult => {
   if (session.status !== 'playing') return rejectSessionAction(session, 'Game is already settled.');
+  if (session.state.rewards.activeOffer !== null || session.state.rewards.pendingRewards.length > 0) return rejectSessionAction(session, 'Resolve pending rewards before ending the turn.');
   if (allBoardsLocked(session.state) || session.turn.round >= session.state.ruleset.roundLimit) {
     return { ok: true, session: settleSession(session) };
   }
