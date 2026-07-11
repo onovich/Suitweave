@@ -1,0 +1,7 @@
+.ink-red{background-image:repeating-linear-gradient(45deg,#0002 0 2px,transparent 2px 7px)}
+.ink-blue{background-image:repeating-linear-gradient(90deg,#0002 0 2px,transparent 2px 7px)}
+.ink-green{background-image:repeating-linear-gradient(0deg,#0002 0 2px,transparent 2px 7px)}
+.ink-purple{background-image:radial-gradient(#0003 1px,transparent 1px);background-size:7px 7px}
+.cell[data-marker]{outline:2px solid #f4ce72;outline-offset:-3px}
+.cell,.card,.board-tabs button,.tutorial-launch button,.tutorial-panel button{min-width:44px;min-height:44px}
+@media (prefers-reduced-motion: reduce){*,*::before,*::after{animation-duration:.01ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.01ms!important}}
