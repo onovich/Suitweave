@@ -19,3 +19,16 @@ test('narrow view retains board summary and selectable board paging', async ({ p
   await expect(page.getByText('21 点盘').first()).toBeVisible();
   await expect(page.locator('.active-board .grid')).toBeVisible();
 });
+
+test('three marker collections open and resolve an inspiration reward', async ({ page }) => {
+  await page.goto('/');
+  for (let index = 0; index < 3; index += 1) {
+    await page.locator('.card:not(.wildcard):not([disabled])').first().click();
+    await page.locator('[data-marker="inspiration"]').nth(index).click();
+    await page.getByRole('button', { name: '确认落牌' }).click();
+  }
+  await page.getByRole('button', { name: '打开奖励候选' }).click();
+  await expect(page.getByLabel('奖励选择')).toBeVisible();
+  await page.getByLabel('奖励选择').getByRole('button').first().click();
+  await expect(page.getByLabel('奖励选择')).toHaveCount(0);
+});

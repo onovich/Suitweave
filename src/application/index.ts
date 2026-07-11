@@ -5,6 +5,7 @@ export { chooseWildcardInk, executePreview, previewPlacement, selectCard, setNum
 export { settleSession, submitBoard } from './submission';
 export { sessionViewModel, type BoardViewModel, type CellViewModel } from './view-model';
 export { discardFeature, openReward, selectRewardOption } from './rewards';
+export { executeFeatureCard } from './features';
 export type {
   GameSession,
   HandCard,

@@ -43,4 +43,6 @@ export type {
   PlaceNumberFaceCommand,
   PlacementCommand,
   SubmitBoardCommand,
+  FeatureTarget,
+  UseFeatureCommand,
 } from './commands';

@@ -4,7 +4,7 @@ import { analyzeConnectivity } from './connectivity';
 import { executeRewardCommand } from './reward-transitions';
 import { executeFeature } from './feature-transitions';
 import type { GameState } from './game-state';
-import type { Board, Cell } from './types';
+import { createScore, type Board, type Cell } from './types';
 
 export type CommandResult =
   | { readonly ok: true; readonly state: GameState; readonly events: readonly DomainEvent[] }
@@ -61,21 +61,28 @@ function submit(state: GameState, board: Board, command: Command): CommandResult
 }
 
 function applyPlacementRewards(before: GameState, after: GameState, previousBoard: Board, nextBoard: Board, previousCell: Cell): Readonly<{ state: GameState; events: readonly DomainEvent[] }> {
+  const marker = collectMarker(after, previousCell, nextBoard);
+  let rewards = marker.rewards;
+  const events: DomainEvent[] = [...marker.events];
+  if (!rewards.crownTriggered && crownsConnected(nextBoard, after)) {
+    rewards = { ...rewards, crownTriggered: true, bonusScore: createScore(rewards.bonusScore + after.ruleset.bonuses.crown), pendingRewards: [...rewards.pendingRewards, 'crown' as const] };
+    events.push({ type: 'crown-connected', boardId: nextBoard.id }, { type: 'reward-queued', reward: 'crown' });
+  }
+  return { state: rewards === before.rewards ? after : { ...after, rewards }, events };
+}
+
+function collectMarker(after: GameState, previousCell: Cell, nextBoard: Board): Readonly<{ rewards: GameState['rewards']; events: readonly DomainEvent[] }> {
   let rewards = after.rewards;
   const events: DomainEvent[] = [];
   const nextCell = nextBoard.cells.find((candidate) => candidate.id === previousCell.id);
   if (nextCell !== undefined && previousCell.ink === undefined && nextCell.ink !== undefined && nextCell.markers.includes('inspiration') && !rewards.collectedMarkerIds.includes(nextCell.id)) {
     const progress = rewards.inspirationProgress + 1;
     const queued = progress >= after.ruleset.markerMeterThreshold;
-    rewards = { ...rewards, collectedMarkerIds: [...rewards.collectedMarkerIds, nextCell.id], inspirationProgress: queued ? progress - after.ruleset.markerMeterThreshold : progress, pendingRewards: queued ? [...rewards.pendingRewards, 'inspiration' as const] : rewards.pendingRewards };
+    rewards = { ...rewards, collectedMarkerIds: [...rewards.collectedMarkerIds, nextCell.id], inspirationProgress: queued ? progress - after.ruleset.markerMeterThreshold : progress, bonusScore: queued ? createScore(rewards.bonusScore + after.ruleset.bonuses.markerMeter) : rewards.bonusScore, pendingRewards: queued ? [...rewards.pendingRewards, 'inspiration' as const] : rewards.pendingRewards };
     events.push({ type: 'marker-collected', boardId: nextBoard.id, cellId: nextCell.id });
     if (queued) events.push({ type: 'reward-queued', reward: 'inspiration' });
   }
-  if (!rewards.crownTriggered && crownsConnected(nextBoard, after)) {
-    rewards = { ...rewards, crownTriggered: true, pendingRewards: [...rewards.pendingRewards, 'crown' as const] };
-    events.push({ type: 'crown-connected', boardId: nextBoard.id }, { type: 'reward-queued', reward: 'crown' });
-  }
-  return { state: rewards === before.rewards ? after : { ...after, rewards }, events };
+  return { rewards, events };
 }
 
 function crownsConnected(board: Board, state: GameState): boolean {

@@ -17,6 +17,7 @@ export interface CellViewModel {
   readonly label: string;
   readonly ink: string | null;
   readonly locked: boolean;
+  readonly marker: 'crown' | 'inspiration' | null;
 }
 
 export const sessionViewModel = (session: GameSession): readonly BoardViewModel[] => session.state.boards.map((board) => {
@@ -24,7 +25,7 @@ export const sessionViewModel = (session: GameSession): readonly BoardViewModel[
   return {
     id: board.id, kind: board.kind, title: boardTitle(board.kind), score: analysis.score,
     invalidNumberCount: analysis.invalidNumberCount, canSubmit: analysis.canSubmit, locked: board.locked,
-    cells: board.cells.map((cell) => ({ id: cell.id, label: cell.number === undefined ? '' : `${cell.number.rank}${suitSymbol(cell.number.suit)}`, ink: cell.ink ?? null, locked: board.locked })),
+    cells: board.cells.map((cell) => ({ id: cell.id, label: cell.number === undefined ? '' : `${cell.number.rank}${suitSymbol(cell.number.suit)}`, ink: cell.ink ?? null, locked: board.locked, marker: cell.markers.includes('crown') ? 'crown' : cell.markers.includes('inspiration') ? 'inspiration' : null })),
   };
 });
 

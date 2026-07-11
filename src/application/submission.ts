@@ -14,8 +14,13 @@ export const settleSession = (session: GameSession): GameSession => ({
   status: 'settled',
   selection: null,
   preview: null,
-  settlement: calculateSettlement(analyzeGame(session.state), session.state.ruleset, { crownScore: 0, markerMeterScore: 0, unusedFunctionScore: 0 }),
+  settlement: calculateSettlement(analyzeGame(session.state), session.state.ruleset, settlementBonuses(session)),
 });
+
+function settlementBonuses(session: GameSession) {
+  const crownScore = session.state.rewards.crownTriggered ? session.state.ruleset.bonuses.crown : 0;
+  return { crownScore, markerMeterScore: session.state.rewards.bonusScore - crownScore, unusedFunctionScore: Math.min(30, session.state.rewards.reserve.length * 3) };
+}
 
 function allBoardsLocked(session: GameSession['state']): boolean { return session.boards.every((board) => board.locked); }
 function accept(session: GameSession): SessionResult { return { ok: true, session }; }
