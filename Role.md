@@ -20,8 +20,8 @@ idempotency:
   active_goal_guide: docs/phase-1-rules-core-goal-mode-execution-guide.md
   active_goal_phase: Phase 1 规则内核
   last_planner_dispatch: 2026-07-11T15:22:02.7829673+08:00
-  last_planner_dispatch_status: ready
+  last_planner_dispatch_status: blocked
   last_planner_dispatch_guide: docs/phase-1-rules-core-goal-mode-execution-guide.md
-  last_planner_dispatch_commit: pending
+  last_planner_dispatch_commit: 907786b
   last_executor_report_commit: none
   last_check_status: pending
