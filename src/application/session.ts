@@ -1,5 +1,6 @@
 import type { GameState } from '../domain';
 import { generateStandardGame } from './generator';
+import { settleSession } from './submission';
 import { drawBasicHand } from './turn';
 import type { GameSession, SessionResult } from './types';
 
@@ -24,7 +25,7 @@ export const rejectSessionAction = (session: GameSession, reason: string): Sessi
 export const endTurn = (session: GameSession): SessionResult => {
   if (session.status !== 'playing') return rejectSessionAction(session, 'Game is already settled.');
   if (allBoardsLocked(session.state) || session.turn.round >= session.state.ruleset.roundLimit) {
-    return { ok: true, session: { ...session, status: 'settled', selection: null, preview: null } };
+    return { ok: true, session: settleSession(session) };
   }
   const nextRound = session.turn.round + 1;
   const drawn = drawBasicHand(session.state, nextRound);
