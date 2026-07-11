@@ -15,9 +15,12 @@ import {
   selectRerollCandidate,
   selectRewardOption,
   sessionViewModel,
+  skipTutorial,
   setNumberMode,
   startSession,
+  startTutorialSession,
   submitBoard,
+  TUTORIAL_STEPS,
   type GameSession,
 } from "../application";
 import type { FeatureTarget, Suit } from "../domain";
@@ -36,9 +39,17 @@ export function App() {
   }> | null>(null);
   const [rankReward, setRankReward] = useState<-1 | 1 | null>(null);
   const [redrawing, setRedrawing] = useState(false);
+  const [feedback, setFeedback] = useState<string | null>(null);
   const boards = useMemo(() => sessionViewModel(session), [session]);
+  const tutorialStep =
+    session.tutorial === null
+      ? undefined
+      : TUTORIAL_STEPS.find(
+          (step) => step.id === session.tutorial?.currentStep,
+        );
   const apply = (result: ReturnType<typeof endTurn>) => {
     setSession(result.session);
+    setFeedback(result.ok ? null : result.reason);
   };
   const select = (cardId: string) => {
     apply(selectCard(session, cardId));
@@ -87,6 +98,32 @@ export function App() {
           <b>行动 {session.turn.actionsRemaining}</b>
         </div>
       </header>
+      <section className="tutorial-launch" aria-label="Tutorial controls">
+        <button onClick={() => { setSession(startTutorialSession()); }}>
+          Start guided tutorial
+        </button>
+        <span>Guidance is optional and never hides the three boards.</span>
+      </section>
+      {session.tutorial !== null && tutorialStep !== undefined && (
+        <section className="tutorial-panel" aria-live="polite">
+          <b>{tutorialStep.title}</b>
+          <p>{tutorialStep.goal}</p>
+          <small>
+            Step {TUTORIAL_STEPS.findIndex((step) => step.id === tutorialStep.id) + 1} / {TUTORIAL_STEPS.length} · round {session.turn.round}
+          </small>
+          {session.tutorial.status === "active" && (
+            <button onClick={() => { apply(skipTutorial(session)); }}>Skip tutorial</button>
+          )}
+        <button onClick={() => { setSession(startTutorialSession()); }}>
+            Restart tutorial
+          </button>
+        </section>
+      )}
+      {feedback !== null && (
+        <section className="action-feedback" role="alert">
+          <b>Action needs attention:</b> {feedback}
+        </section>
+      )}
       <nav aria-label="棋盘切换" className="board-tabs">
         {boards.map((board, index) => (
           <button

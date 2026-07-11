@@ -1,6 +1,6 @@
 // @vitest-environment jsdom
 import '@testing-library/jest-dom/vitest';
-import { fireEvent, render, screen } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import { describe, expect, it } from 'vitest';
 import { App } from './App';
 
@@ -25,5 +25,18 @@ describe('App', () => {
     expect(screen.getByRole('status')).toHaveTextContent('落点预览');
     fireEvent.click(screen.getByRole('button', { name: '确认落牌' }));
     expect(screen.getByText(/行动 2/)).toBeInTheDocument();
+  });
+
+  it('can start and skip the optional fixed-seed tutorial without hiding boards', () => {
+    const view = render(<App />);
+    const scoped = within(view.container);
+    fireEvent.click(scoped.getByRole('button', { name: 'Start guided tutorial' }));
+
+    expect(scoped.getByText('Start with the 21 board')).toBeInTheDocument();
+    expect(scoped.getByRole('button', { name: 'Skip tutorial' })).toBeInTheDocument();
+    expect(scoped.getAllByRole('heading', { level: 2 })).toHaveLength(3);
+
+    fireEvent.click(scoped.getByRole('button', { name: 'Skip tutorial' }));
+    expect(scoped.queryByRole('button', { name: 'Skip tutorial' })).not.toBeInTheDocument();
   });
 });
