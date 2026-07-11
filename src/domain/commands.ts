@@ -1,4 +1,4 @@
-import type { BoardId, CellId, InkColor, PlayingCard } from './types';
+import type { BoardId, CellId, InkColor, PlayingCard, RewardTrigger } from './types';
 
 export interface PlaceNumberFaceCommand {
   readonly type: 'place-card';
@@ -37,4 +37,7 @@ export type DomainEvent =
   | { readonly type: 'number-placed'; readonly boardId: BoardId; readonly cellId: CellId }
   | { readonly type: 'ink-placed'; readonly boardId: BoardId; readonly cellId: CellId }
   | { readonly type: 'board-submitted'; readonly boardId: BoardId }
+  | { readonly type: 'crown-connected'; readonly boardId: BoardId }
+  | { readonly type: 'marker-collected'; readonly boardId: BoardId; readonly cellId: CellId }
+  | { readonly type: 'reward-queued'; readonly reward: RewardTrigger }
   | { readonly type: 'command-rejected'; readonly command: Command; readonly reason: string };

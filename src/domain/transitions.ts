@@ -1,5 +1,6 @@
 import type { Command, DomainEvent, PlacementCommand } from './commands';
 import { analyzeBoard } from './analysis';
+import { analyzeConnectivity } from './connectivity';
 import type { GameState } from './game-state';
 import type { Board, Cell } from './types';
 
@@ -35,7 +36,8 @@ function apply(state: GameState, board: Board, cell: Cell, command: PlacementCom
   const nextBoard = { ...board, cells: board.cells.map((candidate) => candidate.id === cell.id ? nextCell : candidate) };
   const stateWithChange = { ...state, boards: state.boards.map((candidate) => candidate.id === board.id ? nextBoard : candidate) };
   const type = command.type === 'place-card' && command.mode === 'number-face' ? 'number-placed' : 'ink-placed';
-  return { ok: true, state: stateWithChange, events: [{ type, boardId: board.id, cellId: cell.id }] };
+  const rewardUpdate = applyPlacementRewards(state, stateWithChange, board, nextBoard, cell);
+  return { ok: true, state: rewardUpdate.state, events: [{ type, boardId: board.id, cellId: cell.id }, ...rewardUpdate.events] };
 }
 
 function submit(state: GameState, board: Board, command: Command): CommandResult {
@@ -44,7 +46,32 @@ function submit(state: GameState, board: Board, command: Command): CommandResult
   }
   const nextBoard = { ...board, locked: true };
   const nextState = { ...state, boards: state.boards.map((candidate) => candidate.id === board.id ? nextBoard : candidate) };
-  return { ok: true, state: nextState, events: [{ type: 'board-submitted', boardId: board.id }] };
+  const rewards = { ...nextState.rewards, pendingRewards: [...nextState.rewards.pendingRewards, 'completion' as const] };
+  return { ok: true, state: { ...nextState, rewards }, events: [{ type: 'board-submitted', boardId: board.id }, { type: 'reward-queued', reward: 'completion' }] };
+}
+
+function applyPlacementRewards(before: GameState, after: GameState, previousBoard: Board, nextBoard: Board, previousCell: Cell): Readonly<{ state: GameState; events: readonly DomainEvent[] }> {
+  let rewards = after.rewards;
+  const events: DomainEvent[] = [];
+  const nextCell = nextBoard.cells.find((candidate) => candidate.id === previousCell.id);
+  if (nextCell !== undefined && previousCell.ink === undefined && nextCell.ink !== undefined && nextCell.markers.includes('inspiration') && !rewards.collectedMarkerIds.includes(nextCell.id)) {
+    const progress = rewards.inspirationProgress + 1;
+    const queued = progress >= after.ruleset.markerMeterThreshold;
+    rewards = { ...rewards, collectedMarkerIds: [...rewards.collectedMarkerIds, nextCell.id], inspirationProgress: queued ? progress - after.ruleset.markerMeterThreshold : progress, pendingRewards: queued ? [...rewards.pendingRewards, 'inspiration' as const] : rewards.pendingRewards };
+    events.push({ type: 'marker-collected', boardId: nextBoard.id, cellId: nextCell.id });
+    if (queued) events.push({ type: 'reward-queued', reward: 'inspiration' });
+  }
+  if (!rewards.crownTriggered && crownsConnected(nextBoard, after)) {
+    rewards = { ...rewards, crownTriggered: true, pendingRewards: [...rewards.pendingRewards, 'crown' as const] };
+    events.push({ type: 'crown-connected', boardId: nextBoard.id }, { type: 'reward-queued', reward: 'crown' });
+  }
+  return { state: rewards === before.rewards ? after : { ...after, rewards }, events };
+}
+
+function crownsConnected(board: Board, state: GameState): boolean {
+  const crowns = board.cells.filter((cell) => cell.markers.includes('crown'));
+  if (crowns.length !== 2) return false;
+  return analyzeConnectivity(board, state.ruleset).some((group) => crowns.every((crown) => group.cells.some((cell) => cell.id === crown.id)));
 }
 
 function reject(state: GameState, command: Command, reason: string): CommandResult {

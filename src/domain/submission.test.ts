@@ -6,7 +6,8 @@ describe('board submission', () => {
     const state = stateWithPair();
     const result = executeCommand(state, { type: 'submit-board', boardId });
 
-    expect(result).toMatchObject({ ok: true, events: [{ type: 'board-submitted', boardId }] });
+    expect(result.ok).toBe(true);
+    expect(result.events.map((event) => event.type)).toContain('board-submitted');
     if (!result.ok) return;
     expect(result.state.boards[0]?.locked).toBe(true);
     expect(executeCommand(result.state, { type: 'submit-board', boardId })).toMatchObject({ ok: false, state: result.state });

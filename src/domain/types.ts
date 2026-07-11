@@ -11,12 +11,14 @@ export type Rank = 'A' | '2' | '3' | '4' | '5' | '6' | '7' | '8' | '9' | '10' | 
 export type Suit = 'spades' | 'hearts' | 'diamonds' | 'clubs';
 export type InkColor = 'red' | 'blue' | 'green' | 'purple';
 export type Marker = 'crown' | 'inspiration';
+export type RewardTrigger = 'crown' | 'inspiration' | 'completion';
 
 export interface RewardState {
   readonly crownTriggered: boolean;
   readonly collectedMarkerIds: readonly CellId[];
   readonly inspirationProgress: number;
   readonly bonusScore: Score;
+  readonly pendingRewards: readonly RewardTrigger[];
 }
 
 export const createRewardState = (): RewardState => ({
@@ -24,6 +26,7 @@ export const createRewardState = (): RewardState => ({
   collectedMarkerIds: [],
   inspirationProgress: 0,
   bonusScore: createScore(0),
+  pendingRewards: [],
 });
 
 export interface Position {
