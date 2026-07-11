@@ -3,6 +3,7 @@ export { generateStandardGame, type GeneratedGame } from './generator';
 export { drawBasicHand, type DrawnHand } from './turn';
 export { chooseWildcardInk, executePreview, previewPlacement, selectCard, setNumberMode } from './actions';
 export { settleSession, submitBoard } from './submission';
+export { sessionViewModel, type BoardViewModel, type CellViewModel } from './view-model';
 export type {
   GameSession,
   HandCard,
