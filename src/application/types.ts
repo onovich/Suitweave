@@ -19,6 +19,7 @@ export interface Selection {
 }
 
 export interface Preview {
+  readonly sourceState: GameState;
   readonly cardId: string;
   readonly command: Command;
   readonly result: CommandResult;
