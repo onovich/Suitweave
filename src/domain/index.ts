@@ -1,4 +1,5 @@
 export { createGameState, type GameState } from './game-state';
+export { analyzeConnectivity, classifyNumberCount, type ConnectedGroup, type GroupClassification } from './connectivity';
 export { RULESET_V1, type Ruleset } from './ruleset';
 export {
   createBoardId,
@@ -10,6 +11,7 @@ export {
   type BoardId,
   type BoardKind,
   type Cell,
+  type CellContents,
   type CellId,
   type InkColor,
   type Marker,

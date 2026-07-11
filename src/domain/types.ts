@@ -30,6 +30,12 @@ export interface Cell {
   readonly markers: readonly Marker[];
 }
 
+export interface CellContents {
+  readonly number?: PlayingCard;
+  readonly ink?: InkColor;
+  readonly markers?: readonly Marker[];
+}
+
 export interface Board {
   readonly id: BoardId;
   readonly kind: BoardKind;
@@ -55,10 +61,12 @@ export const createPosition = (row: number, column: number): Position => {
   return { row, column };
 };
 
-export const createCell = (id: CellId, position: Position, markers: readonly Marker[] = []): Cell => ({
+export const createCell = (id: CellId, position: Position, contents: CellContents = {}): Cell => ({
   id,
   position,
-  markers: [...markers],
+  ...(contents.number === undefined ? {} : { number: contents.number }),
+  ...(contents.ink === undefined ? {} : { ink: contents.ink }),
+  markers: [...(contents.markers ?? [])],
 });
 
 function brandNonBlank<Name extends string>(value: string, label: Name): Brand<string, Name> {
