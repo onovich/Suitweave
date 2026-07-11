@@ -1,6 +1,6 @@
 # Suitweave 研发 Roadmap
 
-Phase 2 已完成，验收材料见：[Phase 2 可玩垂直切片验证报告](phase-2-playable-vertical-slice-validation-report.md)。Phase 3 必须在规划者验收通过后才可启动。
+Phase 2 已由规划者验收 PASS。当前执行入口：[Phase 3 奖励与构筑 Goal 模式执行指南](phase-3-rewards-and-building-goal-mode-execution-guide.md)，预算 7 轮。
 
 轮次指一次目标明确、包含实现与验证的 Codex 会话；估算按 1 名主执行者计算。并行 worker 仅在边界已稳定后使用，避免多人同时改核心规则。
 
