@@ -1,4 +1,5 @@
-import type { Command, DomainEvent } from './commands';
+import type { Command, DomainEvent, PlacementCommand } from './commands';
+import { analyzeBoard } from './analysis';
 import type { GameState } from './game-state';
 import type { Board, Cell } from './types';
 
@@ -14,6 +15,9 @@ export const executeCommand = (state: GameState, command: Command): CommandResul
   if (board.locked) {
     return reject(state, command, 'Board is locked.');
   }
+  if (command.type === 'submit-board') {
+    return submit(state, board, command);
+  }
   const cell = board.cells.find((candidate) => candidate.id === command.cellId);
   if (cell === undefined) {
     return reject(state, command, 'Cell does not exist.');
@@ -24,7 +28,7 @@ export const executeCommand = (state: GameState, command: Command): CommandResul
   return apply(state, board, cell, command);
 };
 
-function apply(state: GameState, board: Board, cell: Cell, command: Command): CommandResult {
+function apply(state: GameState, board: Board, cell: Cell, command: PlacementCommand): CommandResult {
   const nextCell = command.type === 'place-card' && command.mode === 'number-face'
     ? { ...cell, number: command.card, ink: command.ink }
     : { ...cell, ink: command.ink };
@@ -32,6 +36,15 @@ function apply(state: GameState, board: Board, cell: Cell, command: Command): Co
   const stateWithChange = { ...state, boards: state.boards.map((candidate) => candidate.id === board.id ? nextBoard : candidate) };
   const type = command.type === 'place-card' && command.mode === 'number-face' ? 'number-placed' : 'ink-placed';
   return { ok: true, state: stateWithChange, events: [{ type, boardId: board.id, cellId: cell.id }] };
+}
+
+function submit(state: GameState, board: Board, command: Command): CommandResult {
+  if (!analyzeBoard(board, state.ruleset).canSubmit) {
+    return reject(state, command, 'Board does not meet submission requirements.');
+  }
+  const nextBoard = { ...board, locked: true };
+  const nextState = { ...state, boards: state.boards.map((candidate) => candidate.id === board.id ? nextBoard : candidate) };
+  return { ok: true, state: nextState, events: [{ type: 'board-submitted', boardId: board.id }] };
 }
 
 function reject(state: GameState, command: Command, reason: string): CommandResult {

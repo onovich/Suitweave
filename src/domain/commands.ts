@@ -25,9 +25,16 @@ export interface PlaceInkCommand {
   readonly source: 'ink-card' | 'wildcard';
 }
 
-export type Command = PlaceNumberFaceCommand | PlaceNumberBackCommand | PlaceInkCommand;
+export interface SubmitBoardCommand {
+  readonly type: 'submit-board';
+  readonly boardId: BoardId;
+}
+
+export type PlacementCommand = PlaceNumberFaceCommand | PlaceNumberBackCommand | PlaceInkCommand;
+export type Command = PlacementCommand | SubmitBoardCommand;
 
 export type DomainEvent =
   | { readonly type: 'number-placed'; readonly boardId: BoardId; readonly cellId: CellId }
   | { readonly type: 'ink-placed'; readonly boardId: BoardId; readonly cellId: CellId }
+  | { readonly type: 'board-submitted'; readonly boardId: BoardId }
   | { readonly type: 'command-rejected'; readonly command: Command; readonly reason: string };
