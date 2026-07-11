@@ -1,4 +1,5 @@
 export { rejectSessionAction, startSession } from './session';
+export { generateStandardGame, type GeneratedGame } from './generator';
 export type {
   GameSession,
   HandCard,
