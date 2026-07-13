@@ -1,6 +1,6 @@
 # Suitweave 研发 Roadmap
 
-> Phase 4 已由规划者验收 PASS。当前执行入口：[Phase 5 平衡与内容验证 Goal 模式执行指南](phase-5-balance-and-content-validation-goal-mode-execution-guide.md)，预算 7 轮，含真实玩家检查点。
+> Phase 4 已由规划者验收 PASS。Phase 5 自动化准备已完成，但保持 `BLOCKED_FOR_PLAYER_DATA`。在等待真实玩家数据期间，当前独立执行入口为 [Phase 5A 三盘织局 UI/UX 重构 Goal 模式执行指南](phase-5a-loom-table-ui-ux-redesign-goal-mode-execution-guide.md)，预算 10 轮；其设计契约见 [三盘织局 UI/UX 重构设计契约](suitweave-ui-ux-redesign-contract.md)。本插入阶段不调参、不生成玩家数据、不进入 Phase 6。
 
 Phase 3 已由规划者验收 PASS。当前执行入口：[Phase 4 教学与体验打磨 Goal 模式执行指南](phase-4-onboarding-and-experience-goal-mode-execution-guide.md)，预算 8 轮。
 
